@@ -1,296 +1,460 @@
 <index.html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULK - Computer Architecture Exam</title>
+    <meta name="description" content="أكاديمية G10 - مراجعة CAT2 خوارزميات وهياكل بيانات">
+    <title>أكاديمية الحاسوب G10 | مراجعة CAT2</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=Poppins:wght@400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 800: '#075985', 900: '#0c4a6e' },
+                        sudanese: { gold: '#f59e0b', red: '#dc2626', green: '#16a34a' }
+                    },
+                    fontFamily: {
+                        ar: ['Cairo', 'sans-serif'],
+                        en: ['Poppins', 'sans-serif'],
+                        code: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
+        body { font-family: 'Cairo', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .en-text { font-family: 'Poppins', sans-serif; direction: ltr; text-align: left; }
+        
+        /* Wallet & Gamification UI */
+        .wallet-ui {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white; border-radius: 50px; padding: 5px 15px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            display: flex; align-items: center; gap: 8px; font-weight: 900;
+            border: 2px solid #fbbf24;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .level-badge {
+            background: #1e293b; color: #38bdf8; padding: 3px 10px;
+            border-radius: 20px; font-size: 0.8rem; border: 1px solid #38bdf8;
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
+
+        /* Animations */
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
         }
-        .header h1 {
-            color: #0056b3;
-            font-size: 24px;
-            margin-bottom: 5px;
+        .coin-animation {
+            position: absolute; font-size: 2rem; font-weight: 900;
+            color: #10b981; text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: floatUp 1s ease-out forwards; pointer-events: none; z-index: 1000;
         }
-        .info-panel {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-weight: bold;
+        .coin-animation.negative { color: #ef4444; }
+
+        /* UI Components */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
-        .instructions {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            margin-bottom: 20px;
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
-        .question-block {
-            margin-bottom: 25px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #fafafa;
-        }
-        .arabic-text {
-            color: #555;
-            font-size: 14px;
-            margin-top: 5px;
-            direction: rtl;
-            text-align: right;
-            font-family: 'Arial', sans-serif;
-        }
-        textarea {
-            width: 100%;
-            height: 60px;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            resize: vertical;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #218838;
-        }
-        #results-section {
-            display: none;
-            margin-top: 30px;
-        }
-        .result-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .correct {
-            background: #d4edda;
-            border-left: 5px solid #28a745;
-        }
-        .incorrect {
-            background: #f8d7da;
-            border-left: 5px solid #dc3545;
-        }
-        .partial {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-        }
-        .model-answer {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #0056b3;
-        }
-        .watermark {
-            text-align: center;
-            margin-top: 30px;
-            color: #888;
-            font-size: 14px;
-        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        .dark ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 transition-colors" id="main-body">
 
-<div class="container" id="exam-container">
-    <div class="header">
-        <h1>University of Kigali Independent (ULK) - Polytechnic Institute</h1>
-        <h3>School: Science and Technology</h3>
-    </div>
+    <audio id="coin-sound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3" preload="auto"></audio>
 
-    <div class="info-panel">
-        <p><strong>Year:</strong> 1 Computer Science / Networking</p>
-        <p><strong>Module Title:</strong> COMPUTER ARCHITECTURE AND HARDWARE MAINTENANCE</p>
-        <p><strong>Exam Type:</strong> WRITTEN TEST (Short Answers)</p>
-        <p><strong>Student Name:</strong> <input type="text" id="student-name" value="Ali D" style="padding:5px; font-size:16px; width:200px;"></p>
-        <p><strong>Time Allowed:</strong> 45 Minutes</p>
-    </div>
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <span class="font-black text-2xl tracking-tight text-brand-900 dark:text-white">أكاديمية <span class="text-brand-600">G10</span></span>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex flex-col items-end mr-4">
+                        <div class="level-badge mb-1" id="ui-level">طالب مستجد</div>
+                    </div>
+                    <div class="wallet-ui" title="رصيد عملات G-Coins">
+                        <span>🪙</span>
+                        <span id="ui-coins">0</span>
+                    </div>
 
-    <div class="instructions">
-        <strong>Instructions (التعليمات):</strong>
-        <ul>
-            <li>Read each question carefully. <span class="arabic-text">(اقرأ كل سؤال بعناية)</span></li>
-            <li>Write your answers in simple English. <span class="arabic-text">(اكتب إجاباتك بلغة إنجليزية بسيطة)</span></li>
-        </ul>
-    </div>
-
-    <form id="exam-form">
-        <h3>Section A: Short Answer Questions (أسئلة الإجابات القصيرة)</h3>
-        
-        <div class="question-block">
-            <label><strong>Q1:</strong> What is the main difference between an Input device and an Output device? Give one example for each.</label>
-            <div class="arabic-text">(ما هو الفرق الرئيسي بين جهاز الإدخال وجهاز الإخراج؟ أعطِ مثالاً واحداً لكل منهما).</div>
-            <textarea id="q1" placeholder="Type your answer here..."></textarea>
+                    <button id="theme-toggle" class="p-2 bg-slate-100 dark:bg-slate-800 rounded-full hover:bg-slate-200 transition">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div class="question-block">
-            <label><strong>Q2:</strong> Mention two major causes that lead to computer overheating.</label>
-            <div class="arabic-text">(اذكر سببين رئيسيين يؤديان إلى ارتفاع حرارة الحاسوب).</div>
-            <textarea id="q2" placeholder="1. ...&#10;2. ..."></textarea>
+        <div class="h-1 bg-slate-200 dark:bg-slate-700 w-full">
+            <div id="course-progress" class="h-full bg-brand-500 transition-all duration-500" style="width: 0%"></div>
         </div>
+    </nav>
 
-        <div class="question-block">
-            <label><strong>Q3:</strong> Name the three types of computer buses.</label>
-            <div class="arabic-text">(اذكر أنواع ناقلات الحاسوب الثلاثة).</div>
-            <textarea id="q3" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+    <header id="welcome" class="relative overflow-hidden bg-brand-900 text-white py-24">
+        <div class="relative max-w-7xl mx-auto px-4 text-center z-10">
+            <span class="bg-red-500 text-white px-4 py-1 rounded-full text-sm font-black mb-4 inline-block tracking-widest shadow-lg">🔥 تحديث امتحان CAT2</span>
+            <h1 class="text-5xl sm:text-7xl font-black mb-6">حبابك يا باشمهندس! 👋</h1>
+            <p class="text-xl sm:text-2xl text-brand-100 font-semibold mb-10 max-w-3xl mx-auto">
+                استعد لامتحان الـ CAT2 في الخوارزميات وهياكل البيانات! اجمع الـ <span class="text-sudanese-gold">G-Coins 🪙</span>، واقفل المادة وأنت بتلعب.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#lessons" class="px-8 py-4 bg-sudanese-gold text-brand-900 font-black rounded-full text-lg shadow-xl hover:scale-105 transition transform">مراجعة الأساسيات 📖</a>
+                <a href="#quiz" class="px-8 py-4 bg-white/10 border-2 border-white/30 text-white font-black rounded-full text-lg hover:bg-white/20 transition">العب التحدي 🚀</a>
+            </div>
         </div>
+    </header>
 
-        <h3>Section B: Problem Solving (حل المشكلات)</h3>
-
-        <div class="question-block">
-            <label><strong>Q4:</strong> A computer is taking a very long time to load Windows and open files. Which hardware component should the user upgrade to fix this: RAM, SSD, or Graphics Card?</label>
-            <div class="arabic-text">(حاسوب يستغرق وقتاً طويلاً جداً في تحميل الويندوز وفتح الملفات. أي قطعة عتاد يجب على المستخدم ترقيتها لحل هذه المشكلة: الرام، أم الـ SSD، أم كرت الشاشة؟)</div>
-            <textarea id="q4" placeholder="Type your answer here..."></textarea>
+    <main id="lessons" class="py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-brand-800 dark:text-brand-100 mb-4">الزتونة للمراجعة السريعة 🧠</h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400 font-semibold">أهم 5 مواضيع متوقع بشدة وجودها في الامتحان حسب التسريبات!</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="lessons-container"></div>
         </div>
+    </main>
 
-        <div class="question-block">
-            <label><strong>Q5:</strong> Before opening a computer case to fix it, what is one important safety step a technician must do to avoid electric shocks?</label>
-            <div class="arabic-text">(قبل فتح صندوق الحاسوب لإصلاحه، ما هي الخطوة الآمنة المهمة التي يجب على الفني القيام بها لتجنب الصدمات الكهربائية؟)</div>
-            <textarea id="q5" placeholder="Type your answer here..."></textarea>
+    <section id="quiz" class="py-20 bg-slate-100 dark:bg-slate-800/50">
+        <div class="max-w-4xl mx-auto px-4 relative">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-black text-brand-800 dark:text-white mb-4">تحدي المهندس - إصدار CAT2 🎯</h2>
+                <p class="text-lg text-slate-600 dark:text-slate-400 font-semibold">20 سؤال من الامتحانات السابقة! جاوب صح واكسب 10 🪙، الإجابة الغلط بتخصم منك 2 🪙!</p>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-6 sm:p-10 relative overflow-hidden" id="quiz-container">
+                
+                <div id="quiz-start" class="text-center">
+                    <button onclick="quizEngine.start()" class="bg-brand-600 hover:bg-brand-700 text-white px-10 py-4 rounded-xl font-black text-xl shadow-lg transition hover:scale-105">
+                        أبدى التحدي هسه! 🔥
+                    </button>
+                </div>
+
+                <div id="quiz-core" class="hidden">
+                    <div class="flex justify-between items-center mb-6 border-b dark:border-slate-700 pb-4">
+                        <div class="bg-brand-100 dark:bg-slate-700 text-brand-800 dark:text-brand-100 px-4 py-1 rounded-full font-black text-sm" id="q-counter"></div>
+                    </div>
+                    <div dir="ltr" class="text-left mb-8">
+                        <h4 id="q-text" class="text-2xl font-bold font-en text-slate-800 dark:text-white mb-3 leading-relaxed"></h4>
+                    </div>
+                    <div id="q-options" dir="ltr" class="space-y-3 relative font-en"></div>
+                </div>
+
+                <div id="quiz-result" class="hidden">
+                    <div class="text-center mb-10 border-b dark:border-slate-700 pb-8">
+                        <h3 class="text-3xl font-black mb-2 dark:text-white">النتيجة يا بطل!</h3>
+                        <div class="text-7xl font-black my-6 text-brand-600" id="res-score"></div>
+                        <p id="res-msg" class="text-xl font-bold rounded-lg p-4 inline-block"></p>
+                    </div>
+                    
+                    <div class="bg-slate-800 rounded-2xl p-6 mb-10 text-white border-2 border-sudanese-gold">
+                        <h4 class="text-2xl font-black mb-4 text-sudanese-gold flex items-center gap-2">🛒 متجر الأكاديمية</h4>
+                        <p class="mb-4 text-slate-300">أنفق الـ G-Coins التي جمعتها لفتح ميزات حصرية!</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="bg-slate-700 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-lg">وسام الشرف الذهبي 🏅</h5>
+                                    <p class="text-sm text-slate-400">يظهر بجوار اسمك</p>
+                                </div>
+                                <button onclick="gamification.buyItem('badge', 150, this)" class="bg-sudanese-gold text-slate-900 px-4 py-2 rounded-lg font-black hover:bg-yellow-500 transition">
+                                    150 🪙
+                                </button>
+                            </div>
+                            <div class="bg-slate-700 p-4 rounded-xl flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-bold text-lg">خلفية الماتريكس 💻</h5>
+                                    <p class="text-sm text-slate-400">تغيير ستايل الموقع</p>
+                                </div>
+                                <button onclick="gamification.buyItem('matrix', 300, this)" class="bg-green-500 text-white px-4 py-2 rounded-lg font-black hover:bg-green-400 transition">
+                                    300 🪙
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-center">
+                        <button onclick="quizEngine.reset()" class="bg-brand-600 text-white px-8 py-4 rounded-xl font-black text-lg shadow-lg">
+                            🔄 العب تاني واجمع عملات
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <div class="question-block">
-            <label><strong>Q6:</strong> Why do we need to "Format" a hard drive before installing an Operating System?</label>
-            <div class="arabic-text">(لماذا نحتاج إلى "تهيئة/Format" القرص الصلب قبل تثبيت نظام التشغيل؟)</div>
-            <textarea id="q6" placeholder="Type your answer here..."></textarea>
-        </div>
-
-        <button type="button" onclick="submitExam()">Submit Exam (تسليم الامتحان)</button>
-    </form>
-
-    <div id="results-section">
-        <div class="header">
-            <h2>Exam Results (نتائج الامتحان)</h2>
-            <h3 id="score-display"></h3>
-        </div>
-        <div id="feedback-container"></div>
-        <button type="button" onclick="location.reload()" style="background:#0056b3; margin-top:20px;">Try Again (إعادة المحاولة)</button>
-    </div>
-
-    <div class="watermark">
-        Developed & Designed by Ali D © 2026
-    </div>
-</div>
-
-<script>
-    // نظام تصحيح يعتمد على الكلمات المفتاحية
-    const gradingRubric = {
-        q1: {
-            keywords: ['input', 'output', 'send', 'show', 'keyboard', 'mouse', 'monitor', 'printer'],
-            minKeywords: 2,
-            model: "Input sends data (e.g., Keyboard). Output shows data (e.g., Monitor)."
-        },
-        q2: {
-            keywords: ['dust', 'dirt', 'fan', 'broken', 'cooling'],
-            minKeywords: 2,
-            model: "1. Dust buildup. 2. Broken cooling fans."
-        },
-        q3: {
-            keywords: ['data', 'address', 'control'],
-            minKeywords: 3,
-            model: "1. Data Bus, 2. Address Bus, 3. Control Bus."
-        },
-        q4: {
-            keywords: ['ssd', 'solid state'],
-            minKeywords: 1,
-            model: "SSD (Because it makes loading and booting much faster)."
-        },
-        q5: {
-            keywords: ['unplug', 'power', 'cable', 'electricity', 'strap', 'anti-static'],
-            minKeywords: 1,
-            model: "Unplug the power cable from the electricity (or use an anti-static wrist strap)."
-        },
-        q6: {
-            keywords: ['file system', 'save', 'data', 'os', 'operating system', 'prepare'],
-            minKeywords: 2,
-            model: "To create a file system so the OS can save data."
+    <script>
+        // --- 1. Theme Setup ---
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        function updateTheme() {
+            themeIcon.innerText = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
         }
-    };
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        updateTheme();
+        themeBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            updateTheme();
+        });
 
-    function submitExam() {
-        let totalScore = 0;
-        let maxScore = 6;
-        let feedbackHTML = '';
-
-        for (let i = 1; i <= 6; i++) {
-            let qId = 'q' + i;
-            let userAnswer = document.getElementById(qId).value.trim().toLowerCase();
-            let rubric = gradingRubric[qId];
+        // --- 2. Gamification Engine ---
+        const gamification = {
+            coins: 0,
+            levelName: "طالب مستجد",
+            levels: [
+                { t: 0, n: "مبرمج مبتدئ 🎒" },
+                { t: 50, n: "فاهم لوبس 🔁" },
+                { t: 150, n: "سيد المصفوفات 📊" },
+                { t: 300, n: "ملك الداتا ستركشر 👑" },
+                { t: 500, n: "مهندس خوارزميات ⚡" },
+                { t: 1000, n: "بيل جيتس السودان 💻" }
+            ],
             
-            // حساب الكلمات المفتاحية المتطابقة
-            let matchCount = 0;
-            rubric.keywords.forEach(keyword => {
-                if (userAnswer.includes(keyword)) {
-                    matchCount++;
+            init: function() {
+                this.coins = parseInt(localStorage.getItem('gCoins')) || 0;
+                if(localStorage.getItem('shop_matrix') === 'true') this.applyMatrixTheme();
+                this.updateUI();
+            },
+
+            addCoins: function(amount, event) {
+                this.coins += amount;
+                this.save();
+                this.playAudio('coin-sound');
+                this.showFloatingText(`+${amount} 🪙`, event, false);
+            },
+
+            deductCoins: function(amount, event) {
+                this.coins -= amount;
+                if(this.coins < 0) this.coins = 0;
+                this.save();
+                this.playAudio('wrong-sound');
+                this.showFloatingText(`-${amount} 🪙`, event, true);
+            },
+
+            save: function() {
+                localStorage.setItem('gCoins', this.coins);
+                this.updateUI();
+            },
+
+            updateUI: function() {
+                let currentLevel = this.levels[0].n;
+                for(let l of this.levels) {
+                    if(this.coins >= l.t) currentLevel = l.n;
                 }
-            });
+                if(localStorage.getItem('shop_badge') === 'true') currentLevel += " 🏅";
 
-            let statusClass = 'incorrect';
-            let statusText = 'Incorrect (إجابة خاطئة أو غير مكتملة)';
+                document.getElementById('ui-coins').innerText = this.coins;
+                document.getElementById('ui-level').innerText = currentLevel;
+            },
 
-            if (matchCount >= rubric.minKeywords) {
-                statusClass = 'correct';
-                statusText = 'Correct (إجابة صحيحة)';
-                totalScore++;
-            } else if (matchCount > 0) {
-                statusClass = 'partial';
-                statusText = 'Needs Improvement (إجابة قريبة ولكن ينقصها التفاصيل)';
-                totalScore += 0.5; // نصف درجة
+            playAudio: function(id) {
+                const audio = document.getElementById(id);
+                if(audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log("Audio play prevented by browser"));
+                }
+            },
+
+            showFloatingText: function(text, event, isNegative) {
+                const animText = document.createElement('div');
+                animText.innerText = text;
+                animText.className = `coin-animation ${isNegative ? 'negative' : ''}`;
+                
+                if(event && event.clientX) {
+                    animText.style.left = (event.clientX - 20) + 'px';
+                    animText.style.top = (event.clientY - 20) + 'px';
+                    animText.style.position = 'fixed';
+                } else {
+                    const rect = document.getElementById('q-options').getBoundingClientRect();
+                    animText.style.left = (rect.left + rect.width/2) + 'px';
+                    animText.style.top = (rect.top + rect.height/2) + 'px';
+                    animText.style.position = 'fixed';
+                }
+
+                document.body.appendChild(animText);
+                setTimeout(() => animText.remove(), 1000);
+            },
+
+            buyItem: function(itemId, cost, btnElement) {
+                if(localStorage.getItem(`shop_${itemId}`) === 'true') {
+                    alert("لقد قمت بشراء هذا العنصر مسبقاً!");
+                    return;
+                }
+                if(this.coins >= cost) {
+                    this.coins -= cost;
+                    localStorage.setItem(`shop_${itemId}`, 'true');
+                    this.save();
+                    btnElement.innerText = "تم الشراء ✅";
+                    btnElement.classList.replace('bg-sudanese-gold', 'bg-slate-500');
+                    if(itemId === 'matrix') this.applyMatrixTheme();
+                    if(itemId === 'badge') this.updateUI();
+                    this.playAudio('coin-sound');
+                } else {
+                    alert(`رصيدك غير كافي! تحتاج إلى ${cost} عملة.`);
+                }
+            },
+
+            applyMatrixTheme: function() {
+                document.getElementById('main-body').style.backgroundColor = '#000';
+                document.documentElement.classList.add('dark');
+                document.querySelectorAll('.glass-panel').forEach(el => {
+                    el.style.border = '1px solid #0f0';
+                    el.style.boxShadow = '0 0 15px rgba(0, 255, 0, 0.2)';
+                });
             }
+        };
 
-            if(userAnswer === '') {
-                 statusText = 'No Answer (لم يتم الإجابة)';
-            }
+        window.onload = () => gamification.init();
 
-            feedbackHTML += `
-                <div class="result-item ${statusClass}">
-                    <strong>Question ${i}:</strong><br>
-                    <em>Your Answer:</em> ${userAnswer || '<span style="color:red">No answer provided</span>'}<br>
-                    <strong>Status:</strong> ${statusText}<br>
-                    <div class="model-answer">💡 Model Answer: ${rubric.model}</div>
+        // --- 3. Curriculum Data (Top 5 Expected Questions Translated into Concepts) ---
+        const curriculumData = [
+            { id: 1, title: "1. الخوارزمية (Algorithm)", acadAr: "إجراء خطوة بخطوة لحل مشكلة. يجب أن تكون محدودة (Finite) لضمان انتهاء المهمة.", simpAr: "خطوات مرتبة لحل مشكلة، ولازم تنتهي وما تستمر للأبد.", sudanese: "الخوارزمية دي زي 'وصفة الطبخة'، خطوات واضحة بتمشي عليها عشان تطلع بنتيجة، ولازم تنتهي ما بتقعد للما لانهاية!" },
+            { id: 2, title: "2. المصفوفات (Arrays)", acadAr: "تخزن عناصر من نفس النوع المتغير. عيبها الرئيسي صعوبة تغيير حجمها بعد إنشائها.", simpAr: "خانات بتخزن بيانات من نفس النوع، بس مشكلتها حجمها ثابت.", sudanese: "دي 'عمارة' شققها كلها مقاس واحد (نفس الداتا)، بس مشكلتها لو بنيتها بـ 10 شقق صعب تزيدها بعدين!" },
+            { id: 3, title: "3. المرور على المصفوفة (Traversal)", acadAr: "المرور (Traversing) يعني زيارة كل عنصر في المصفوفة واحداً تلو الآخر لمعالجته.", simpAr: "أنك تمر على كل العناصر بالترتيب واحد ورا التاني.", sudanese: "زي أستاذ بقرأ 'كشف الغياب'، بيمر على كل الأسماء اسم اسم لحدي ما يخلص القائمة." },
+            { id: 4, title: "4. حلقات التكرار (Loops)", acadAr: "تكرار تنفيذ الأكواد. حلقة (do...while) تتميز بأنها تنفذ مرة واحدة على الأقل.", simpAr: "كود بيكرر نفسه. الـ do...while بتشتغل مرة وحدة عالأقل قبل فحص الشرط.", sudanese: "الـ do...while دي زول 'بجرب أول حاجة' بعدين يسأل، يعني بينفذ الأوامر مرة واحدة أكيد حتى لو الشرط كان غلط من البداية." },
+            { id: 5, title: "5. هياكل البيانات والدوال", acadAr: "هياكل البيانات تنظم وتدير البيانات بكفاءة. الدوال (Functions) تؤدي مهام محددة ليعاد استخدامها.", simpAr: "الداتا ستركشر بتنظم الداتا. والدالة كود بنكتبه مرة عشان نستخدمه كتير.", sudanese: "هياكل البيانات دي 'دولابك' المرتب. والدالة (Function) دي 'عامل الصيانة' البتستدعيهو كل ما تحتاجه يعمل ليك مهمة معينة ويمشي." }
+        ];
+
+        const lessonsContainer = document.getElementById('lessons-container');
+        curriculumData.forEach((lesson) => {
+            lessonsContainer.innerHTML += `
+                <div class="glass-panel p-6 rounded-2xl border-t-4 border-brand-500">
+                    <h3 class="text-xl font-black text-brand-800 dark:text-brand-400 mb-4">${lesson.title}</h3>
+                    <div class="bg-sudanese-gold/10 p-4 rounded-lg border-r-4 border-sudanese-gold mb-3 text-slate-800 dark:text-slate-200 font-bold leading-relaxed">${lesson.sudanese}</div>
+                    <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg text-sm text-slate-600 dark:text-slate-400 border-r-2 border-brand-300 leading-relaxed">${lesson.acadAr}</div>
                 </div>
             `;
-        }
+        });
 
-        // إخفاء الامتحان وإظهار النتائج
-        document.getElementById('exam-form').style.display = 'none';
-        document.getElementById('results-section').style.display = 'block';
-        
-        let studentName = document.getElementById('student-name').value;
-        document.getElementById('score-display').innerHTML = `Student: ${studentName} <br> Estimated Score: ${totalScore} / ${maxScore}`;
-        document.getElementById('feedback-container').innerHTML = feedbackHTML;
-        window.scrollTo(0, 0);
-    }
-</script>
+        // --- 4. Quiz Engine (20 Questions for CAT2) ---
+        const quizData = [
+            { q: "1. Which best describes an algorithm?", opts: ["A programming language", "A compiler", "A hardware device", "A step-by-step procedure used to solve a problem"], correct: 3, exp: "لأنها خطوات متسلسلة لحل المشكلة." },
+            { q: "2. Why must an algorithm be finite?", opts: ["It must use a computer.", "It must use arrays.", "It must be written in code.", "It must end after completing a task."], correct: 3, exp: "يجب أن تنتهي الخوارزمية ولا تستمر للما لا نهاية." },
+            { q: "3. Which is a characteristic of a good algorithm?", opts: ["Infinite", "Ambiguous", "Definite", "Random"], correct: 2, exp: "Definite يعني أن تكون خطواتها محددة وواضحة." },
+            { q: "4. The first step in algorithm design is:", opts: ["Write code", "Compile", "Understand the problem", "Draw a flowchart"], correct: 2, exp: "فهم المشكلة هو دائماً الخطوة الأولى قبل كتابة أي كود." },
+            { q: "5. What is a data structure?", opts: ["A programming language", "A loop", "A way of organizing and storing data", "A compiler"], correct: 2, exp: "طريقة لتنظيم وتخزين البيانات لتسهيل إدارتها." },
+            { q: "6. Data structures are mainly used to:", opts: ["Damage data", "Delete files", "Organize and manage data efficiently", "Slow programs"], correct: 2, exp: "إدارة البيانات بكفاءة وسرعة عالية." },
+            { q: "7. Which example represents data used to support decisions?", opts: ["Keyboard", "Internet cable", "Student exam results", "Playing music"], correct: 2, exp: "نتائج الطلاب بيانات تفيد في اتخاذ القرارات الأكاديمية." },
+            { q: "8. What is one main limitation of arrays?", opts: ["They are slow to access.", "They cannot store numbers.", "They cannot be searched.", "Their size cannot change easily."], correct: 3, exp: "حجم المصفوفة ثابت (Static)، وتغييره لاحقاً يعتبر صعباً." },
+            { q: "9. Array elements are accessed using:", opts: ["Pointer", "Index", "Function", "Loop"], correct: 1, exp: "عن طريق الفهرس (Index) الذي يبدأ من 0." },
+            { q: "10. Traversing an array means:", opts: ["Sorting data", "Deleting data", "Visiting every element one by one", "Copying data"], correct: 2, exp: "المرور على كل عنصر داخل المصفوفة للتعامل معه." },
+            { q: "11. Which activity best represents array traversal?", opts: ["Drawing a picture", "Guessing a number", "Jumping randomly", "Checking each name on an attendance list"], correct: 3, exp: "تفقد قائمة الحضور اسماً اسماً هو أفضل تشبيه للمرور (Traversal)." },
+            { q: "12. Dry Run means:", opts: ["Compiling a program", "Executing a program", "Testing an algorithm manually", "Writing C++ code"], correct: 2, exp: "اختبار الخوارزمية يدوياً بالورقة والقلم لضمان صحتها." },
+            { q: "13. Which loop always executes at least once?", opts: ["for", "while", "do...while", "switch"], correct: 2, exp: "لأنها تنفذ الكود أولاً ثم تفحص الشرط في النهاية." },
+            { q: "14. The break statement:", opts: ["Skips one iteration", "Restarts the loop", "Terminates the loop or switch", "Creates a function"], correct: 2, exp: "تستخدم لإنهاء الحلقة التكرارية بالكامل أو الـ switch." },
+            { q: "15. The continue statement:", opts: ["Stops the loop", "Skips the current iteration", "Ends the program", "Deletes a variable"], correct: 1, exp: "تتخطى اللفة الحالية (iteration) وتكمل اللفة التي تليها." },
+            { q: "16. Function overloading means:", opts: ["A function calling itself", "Different function names", "Same function name with different parameters", "Using default arguments only"], correct: 2, exp: "استخدام نفس اسم الدالة ولكن بمعاملات (Parameters) مختلفة." },
+            { q: "17. Recursion is:", opts: ["A loop", "An array", "A function calling itself", "A switch statement"], correct: 2, exp: "الاستدعاء الذاتي: عندما تقوم الدالة باستدعاء نفسها." },
+            { q: "18. An array stores:", opts: ["Different data types", "Elements of the same data type", "Only characters", "Only integers"], correct: 1, exp: "جميع عناصر المصفوفة يجب أن تكون من نفس النوع (مثلا كلها integers)." },
+            { q: "19. Which of the following is an advantage of arrays?", opts: ["Dynamic size", "Fast access using an index", "Easy insertion anywhere", "No memory required"], correct: 1, exp: "الوصول العشوائي السريع عن طريق الفهرس (Index)." },
+            { q: "20. What is the main purpose of a function?", opts: ["Store data", "Create arrays", "Perform a specific task and reuse code", "Replace loops"], correct: 2, exp: "تنفيذ مهمة معينة لكي نعيد استخدام الكود بدون تكرار." }
+        ];
 
+        const quizEngine = {
+            currentIndex: 0, score: 0,
+            
+            elStart: document.getElementById('quiz-start'),
+            elCore: document.getElementById('quiz-core'),
+            elResult: document.getElementById('quiz-result'),
+            elQText: document.getElementById('q-text'),
+            elOpts: document.getElementById('q-options'),
+            elCounter: document.getElementById('q-counter'),
+
+            start: function() {
+                this.currentIndex = 0; this.score = 0;
+                this.elStart.classList.add('hidden');
+                this.elResult.classList.add('hidden');
+                this.elCore.classList.remove('hidden');
+                this.loadQuestion();
+            },
+
+            loadQuestion: function() {
+                const q = quizData[this.currentIndex];
+                this.elCounter.innerText = `سؤال ${this.currentIndex + 1} من ${quizData.length}`;
+                this.elQText.innerText = q.q;
+                this.elOpts.innerHTML = '';
+                
+                q.opts.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    // Options text aligned left for English
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 font-medium transition hover:border-brand-500 hover:bg-brand-50 dark:hover:bg-slate-800";
+                    btn.innerText = opt;
+                    btn.onclick = (e) => this.handleAnswer(idx, btn, e);
+                    this.elOpts.appendChild(btn);
+                });
+            },
+
+            handleAnswer: function(idx, btnElem, event) {
+                const q = quizData[this.currentIndex];
+                const isCorrect = (idx === q.correct);
+
+                Array.from(this.elOpts.children).forEach(b => b.disabled = true);
+
+                if(isCorrect) {
+                    this.score++;
+                    btnElem.classList.add('bg-green-100', 'border-green-500', 'text-green-700', 'dark:text-green-800');
+                    gamification.addCoins(10, event); 
+                } else {
+                    btnElem.classList.add('bg-red-100', 'border-red-500', 'text-red-700', 'dark:text-red-800');
+                    gamification.deductCoins(2, event); 
+                    this.elOpts.children[q.correct].classList.add('bg-green-100', 'border-green-500', 'text-green-700', 'dark:text-green-800');
+                }
+
+                // Update progress bar
+                document.getElementById('course-progress').style.width = ((this.currentIndex + 1) / quizData.length * 100) + '%';
+
+                setTimeout(() => {
+                    this.currentIndex++;
+                    if(this.currentIndex < quizData.length) {
+                        this.loadQuestion();
+                    } else {
+                        this.showResult();
+                    }
+                }, 1200);
+            },
+
+            showResult: function() {
+                this.elCore.classList.add('hidden');
+                this.elResult.classList.remove('hidden');
+                
+                document.getElementById('res-score').innerText = `${this.score} / ${quizData.length}`;
+                const msgEl = document.getElementById('res-msg');
+                
+                if (this.score >= 18) {
+                    msgEl.innerText = "وحش الخوارزميات! 🔥 أنت جاهز 100% لامتحان الـ CAT2.";
+                } else if (this.score >= 10) {
+                    msgEl.innerText = "أداء ممتاز! راجع 'الزتونة' فوق عشان تقفل الامتحان الجاي.";
+                } else {
+                    msgEl.innerText = "محتاج شدة حيل شوية يا باشمهندس! اقرأ الموسوعة فوق وجرب تاني.";
+                }
+                msgEl.className = "text-xl font-bold rounded-lg p-4 bg-brand-100 text-brand-800 border-2 border-brand-500 mt-4";
+            },
+
+            reset: function() {
+                this.elResult.classList.add('hidden');
+                this.elStart.classList.remove('hidden');
+                document.getElementById('course-progress').style.width = '0%';
+                window.scrollTo({ top: document.getElementById('quiz').offsetTop, behavior: 'smooth' });
+            }
+        };
+    </script>
 </body>
 </html>
